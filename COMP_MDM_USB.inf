@@ -1,0 +1,99 @@
+; COMP_MDM_USB.inf
+;
+; Installation of usb modem driver description file (INF) for Motorola V878 and V690 
+; phones.
+;
+; Copyright (c) 2004 by Motorola, Inc. 
+
+[Manufacturer]
+%Motorola% = Motorola
+
+[Motorola]
+%Moto%=Moto, USB\VID_067B&PID_2303
+
+[SourceDisksNames]
+1 = %Motorola.Disk%,,,
+
+[SourceDisksFiles]
+SER9PL.SYS = 1
+SERSPL.VXD = 1
+ser2pl.sys = 1
+COMP_MDM.INF = 1
+
+[DestinationDirs]
+USB2SER.Files.Ext = 11
+Files.Inf = 17
+DefaultDestDir = 12
+
+[Files.Inf]
+COMP_MDM.INF
+
+[Moto_install]
+;Windows98_ME
+
+[Version]
+Signature="$Windows 95$"
+Class=USB
+SetupClass=BASE
+provider=%Motorola%
+
+
+[Moto]
+CopyFiles=USB2SER.Files.Ext, Files.Inf
+AddReg=USB2SER.AddReg
+
+[USB2SER.AddReg]
+HKR,,DevLoader,0,*ntkern
+HKR,,NTMPDriver,,SER9PL.SYS
+
+[USB2SER.Files.Ext]
+SER9PL.SYS
+SERSPL.VXD
+
+;========================================================================
+;
+;========================================================================
+[Moto_Install.NTx86]
+;Windows2000
+
+[Version]
+Signature="$Windows NT$"
+Class=Modem
+ClassGuid={4D36E96D-E325-11CE-BFC1-08002BE10318}
+Provider=%Motorola%
+LayoutFile=layout.inf
+DriverVer=05/05/2004,1.5.0.1
+
+[Moto.NT]
+CopyFiles=Moto.NT.Copy, Files.Inf
+Include=COMP_MDM.inf
+Needs=Moto1
+
+[Moto.NT.HW]
+AddReg=Moto.NT.HW.AddReg
+
+[Moto.NT.Copy]
+ser2pl.sys
+
+[Moto.NT.HW.AddReg]
+HKR,,"LowerFilters",0x00010000,"ser2pl"
+
+[Moto.NT.Services]
+AddService=ser2pl, 0x00000000, LowerFilter_Service_Inst
+	
+[LowerFilter_Service_Inst]
+DisplayName=%USBFilterString%
+ServiceType= 1
+StartType  = 3
+ErrorControl = 0
+ServiceBinary = %12%\ser2pl.sys
+
+;========================================================================
+;
+;========================================================================
+[Strings]
+Motorola = "Motorola"
+Motorola.Disk = "USB-Serial Disk"
+Moto = "Motorola Comp Modem"
+USBFilterString="USB Filter Driver"
+
